@@ -1,0 +1,58 @@
+import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link'; // Use Next.js Link for navigation
+
+const ProfileNav = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Add event listener
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup function to remove the listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [navRef]);
+
+  return (
+    <div className="relative" ref={navRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white font-bold text-lg shadow-md hover:bg-blue-600 transition"
+        aria-label="Profile menu"
+      >
+        U
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20">
+          <div className="block px-4 py-2 text-xs text-gray-400">
+            My Account
+          </div>
+          <Link
+            href="/history"
+            onClick={() => { setIsOpen(false); }}
+            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            Show Campaigns
+          </Link>
+          <Link
+            href="/"
+            onClick={() => { setIsOpen(false); }}
+            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            New Campaigns
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProfileNav;
