@@ -46,10 +46,8 @@ export default function CampaignBuilder() {
       <div className="fixed inset-0 flex items-center justify-center z-50" aria-busy="true">
         <div className="absolute inset-0 bg-white/40 backdrop-blur-lg" />
         <div className="absolute inset-0 pointer-events-none">
-          {/* optional subtle radial white vignette */}
           <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/30 to-transparent mix-blend-screen" />
         </div>
-
         <div className="relative z-10 flex flex-col items-center gap-3">
           <div className="w-14 h-14 rounded-full border-4 border-t-transparent animate-spin border-gray-600" />
           <div className="text-sm text-gray-800 font-semibold">Please wait — loading</div>
