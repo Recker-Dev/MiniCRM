@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from "react";
 import { toast } from 'sonner';
 import useCampaignStore from '@/stores/campaignStore';
+import { saveCampaignApi } from "@/lib/services";
 import Header from "@/components/Header";
 import CreateCampaign from '@/components/CreateCampaign';
 import CustomerTableModal from '@/components/CustomerTableModal';
@@ -61,26 +62,18 @@ export default function CampaignBuilder() {
     }
 
     const payload = {
-      userId: session.user.googleId, 
+      userId: session.user.googleId,
       name: campaignName,
-      ruleGroup: ruleGroup,
+      ruleGroup,
       message: personalizedMessage,
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/campaigns", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Failed to save campaign on server");
-
-      const data = await res.json();
+      const data = await saveCampaignApi(payload);
 
       toast.success(data.message || "Campaign saved successfully!");
 
-      // Construct local campaign object 
+      // Construct local campaign object (if needed)
       const newCampaign = {
         id: session.user.googleId,
         name: campaignName,
@@ -93,14 +86,14 @@ export default function CampaignBuilder() {
         date: new Date().toLocaleDateString("en-GB"),
       };
 
-      saveCampaign(data.campaignId); 
+      // call your local store update
+      useCampaignStore.getState().saveCampaign(data.campaignId);
 
     } catch (err) {
       console.error("Error saving campaign:", err);
       toast.error("Failed to save campaign on server");
     }
   };
-
 
   return (
     <div className="font-sans antialiased text-gray-900 bg-gray-100 min-h-screen py-16 px-4 sm:px-6 lg:px-8">

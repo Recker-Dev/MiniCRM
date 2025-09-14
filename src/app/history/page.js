@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import { CampaignMetricsChart } from "@/components/CampaignMetricsChart";
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import useCampaignStore from "@/stores/campaignStore.js";
+import { getUserCampaigns } from "@/lib/services";
 import Link from 'next/link';
 
 
@@ -34,19 +35,8 @@ const CampaignHistory = () => {
     if (session?.user) {
       (async () => {
         try {
-          const res = await fetch("http://localhost:3000/api/campaigns/get", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ userId: session.user.googleId }),
-          });
-
-          if (!res.ok) throw new Error("Failed to fetch campaigns");
-
-          const data = await res.json();
-          console.log(data);
-          setCampaigns(data); 
+          const campaigns = await getUserCampaigns(session.user.googleId);
+          setCampaigns(campaigns);
         } catch (err) {
           console.error("Error loading campaigns:", err);
         }
@@ -58,6 +48,7 @@ const CampaignHistory = () => {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
+  
   const filteredCampaigns = campaigns.filter(campaign => {
     const matchesSearch = campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       campaign.message.toLowerCase().includes(searchTerm.toLowerCase()) ||

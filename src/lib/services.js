@@ -1,34 +1,62 @@
 const axios = require('axios');
 
 export async function getCustomerDetails(ruleGroup) {
-    try {
-        // console.log(ruleGroup);
-        const response = await axios.post('http://localhost:3000/api/customers/get', ruleGroup);
+  try {
+    // console.log(ruleGroup);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/customers/get`, ruleGroup);
 
-        if (Array.isArray(response.data)) {
-            return {
-                size: response.data.length,
-                customers: response.data
-            };
-        } else {
-            return {
-                size: 0,
-                customers: []
-            };
-        }
-    } catch (error) {
-        if (error.response && error.response.data) {
-            console.error(`Error getting customer: ${error.response.data.message}`);
-        } else {
-            console.error(`Error getting customer: ${error.message}`);
-        }
-        return { size: 0, customers: [] };
+    if (Array.isArray(response.data)) {
+      return {
+        size: response.data.length,
+        customers: response.data
+      };
+    } else {
+      return {
+        size: 0,
+        customers: []
+      };
     }
+  } catch (error) {
+    if (error.response && error.response.data) {
+      console.error(`Error getting customer: ${error.response.data.message}`);
+    } else {
+      console.error(`Error getting customer: ${error.message}`);
+    }
+    return { size: 0, customers: [] };
+  }
+};
+
+export const getUserCampaigns = async (userId) => {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URI}/api/campaigns/get`,
+      userId 
+    );
+
+    return response.data; // expect array of campaigns
+  } catch (error) {
+    console.error("Error fetching campaigns:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const saveCampaignApi = async (payload) => {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URI}/api/campaigns`,
+      payload,
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error saving campaign:", error.response?.data || error.message);
+    throw error;
+  }
 };
 
 export async function generateAISuggestions(campaignName, campaignObjective) {
   try {
-    const response = await axios.post("http://localhost:3000/api/ai/campaign", {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/ai/campaign`, {
       campaignName,
       campaignObjective,
     });
@@ -52,7 +80,7 @@ export async function generateAISuggestions(campaignName, campaignObjective) {
 
 export async function generateAIRules(query) {
   try {
-    const response = await axios.post("http://localhost:3000/api/ai/dynamic", {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/ai/dynamic`, {
       query,
     });
 
