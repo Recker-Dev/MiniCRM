@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Trash2 } from "lucide-react";
-import useCampaignStore from "../stores/campaignStore";
+import useCampaignStore from "@/stores/campaignStore";
 
 const RuleComponent = ({ rule, attributes, operators, parentId }) => {
     const updateRule = useCampaignStore((s) => s.updateRule);

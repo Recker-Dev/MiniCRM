@@ -2,7 +2,7 @@
 import React from "react";
 import { Trash2, Plus, } from "lucide-react";
 import RuleComponent from "./RuleComponent";
-import useCampaignStore from "../stores/campaignStore";
+import useCampaignStore from "@/stores/campaignStore";
 
 const RuleGroup = ({ group, attributes, operators, parentId = null }) => {
     const addRule = useCampaignStore((s) => s.addRule);

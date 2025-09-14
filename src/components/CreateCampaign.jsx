@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import { toast } from 'sonner';
-import RuleGroup from "./RuleGroup";
-import useCampaignStore from "../stores/campaignStore";
-import AiPersonalizedMessageBuilder from "./AiPersonalizedMessageBuilder";
-import AiRuleBuilder from "./AiRuleBuilder";
-import { getCustomerDetails } from "../lib/services";
+import RuleGroup from "@/components/RuleGroup";
+import useCampaignStore from "@/stores/campaignStore";
+import AiPersonalizedMessageBuilder from "@/components/AiPersonalizedMessageBuilder";
+import AiRuleBuilder from "@/components/AiRuleBuilder";
+import { getCustomerDetails } from "@/lib/services";
 import { EyeIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 
 const CreateCampaign = ({ attributes, operators }) => {
