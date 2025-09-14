@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { Trash2, Plus, } from "lucide-react";
 import RuleComponent from "./RuleComponent";

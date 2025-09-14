@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import useCampaignStore from "@/stores/campaignStore";
+import { generateAISuggestions } from "@/lib/services";
 
 const AiPersonalizedMessageBuilder = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +37,7 @@ const AiPersonalizedMessageBuilder = () => {
     };
   }, [isAISuggestionModalOpen, isLoading]);
 
+
   const handleGenerateAISuggestions = async () => {
     try {
       setIsLoading(true);
@@ -43,32 +45,19 @@ const AiPersonalizedMessageBuilder = () => {
       const campaignObjective = aiPrompt.trim();
 
       if (campaignName == "" || campaignObjective == "") {
-        toast.error("Campaign name and objective is needed!")
+        toast.error("Campaign name and objective is needed!");
         return;
       }
 
-      const response = await fetch("http://localhost:3000/api/ai/campaign", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          campaignName: campaignName,
-          campaignObjective: campaignObjective,
-        }),
-      });
+      const { success, suggestions } = await generateAISuggestions(
+        campaignName,
+        campaignObjective
+      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Expecting { suggestions: [...] }
-      if (data.suggestions && Array.isArray(data.suggestions)) {
-        setAiSuggestions(data.suggestions);
+      if (success) {
+        setAiSuggestions(suggestions);
       } else {
-        console.error("Invalid AI response:", data);
+        console.error("Invalid AI response");
         setAiSuggestions([]);
       }
     } catch (err) {
@@ -78,7 +67,6 @@ const AiPersonalizedMessageBuilder = () => {
       setIsLoading(false);
     }
   };
-
 
   const handleSelectSuggestion = (suggestion) => {
     setPersonalizedMessage(suggestion)

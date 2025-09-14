@@ -1,6 +1,7 @@
+"use client";
 import { useState, useRef, useEffect } from 'react';
 import useCampaignStore from '@/stores/campaignStore';
-import Link from 'next/link'; // Use Next.js Link for navigation
+import Link from 'next/link'; 
 import { signOut } from "next-auth/react";
 
 const ProfileNav = ({ session }) => {
@@ -14,14 +15,13 @@ const ProfileNav = ({ session }) => {
       }
     };
 
-    // Add event listener
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Cleanup function to remove the listener
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [navRef]);
+
 
   return (
     <div className="relative" ref={navRef}>

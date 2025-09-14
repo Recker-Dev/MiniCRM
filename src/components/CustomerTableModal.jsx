@@ -3,22 +3,19 @@ import useCampaignStore from '@/stores/campaignStore';
 import { useRouter } from 'next/navigation';
 
 const CustomerTableModal = ({ customers, onClose, onSave }) => {
-  // Inside your component
   const router = useRouter();
   const setModalOpen = useCampaignStore((s) => s.setModalOpen);
-  // If no customers, don't render the modal
   if (!customers || customers.length === 0) return null;
-
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
-    setLoading(true); // show spinner cursor
+    setLoading(true); 
     try {
-      await onSave(); // wait for async save
+      await onSave(); 
       setModalOpen(false);
       router.push("/history");
     } finally {
-      setLoading(false); // reset cursor
+      setLoading(false); 
     }
   };
 

@@ -38,8 +38,6 @@ const authOptions = {
                     }),
                 });
 
-                // Check the response status and body
-                // console.log("Backend response status:", response.status);
                 // const responseData = await response.json();
                 // console.log("Backend response data:", responseData);
             } catch (err) {
@@ -72,7 +70,7 @@ const authOptions = {
     },
 };
 
-// ✅ App Router requires GET and POST exports
+
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

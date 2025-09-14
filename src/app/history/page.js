@@ -2,11 +2,11 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
+import Header from "@/components/Header";
 import { CampaignMetricsChart } from "@/components/CampaignMetricsChart";
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import useCampaignStore from "@/stores/campaignStore.js";
-import ProfileNav from '@/components/ProfileNav';
-import Link from 'next/link'; // Use Next.js Link for navigation
+import Link from 'next/link';
 
 
 const CampaignHistory = () => {
@@ -46,7 +46,7 @@ const CampaignHistory = () => {
 
           const data = await res.json();
           console.log(data);
-          setCampaigns(data); // 👈 update Zustand
+          setCampaigns(data); 
         } catch (err) {
           console.error("Error loading campaigns:", err);
         }
@@ -72,21 +72,7 @@ const CampaignHistory = () => {
 
   return (
     <div className="font-sans antialiased text-gray-900 bg-gray-100 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-      <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-                body { font-family: 'Inter', sans-serif; }
-            `}</style>
-      <script src="https://cdn.tailwindcss.com"></script>
-      <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-10 bg-white/80 backdrop-blur-sm shadow-md">
-        <Link href="/campaign" className="text-3xl font-extrabold text-blue-700 tracking-tight">
-          Mini CRM
-        </Link>
-        <div className="flex items-center space-x-4">
-          {/* Add these two lines to display the user's name */}
-          <span className="text-gray-600 truncate hidden md:inline"> Hello {session?.user?.name || session?.user?.email} !</span>
-          <ProfileNav session={session} />
-        </div>
-      </header>
+      <Header />
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-auto mx-auto mt-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-gray-800">Campaign History</h2>
@@ -193,7 +179,7 @@ const CampaignHistory = () => {
                         {new Date(campaign.createdAt).toLocaleDateString("en-GB")}
                       </td>
                     </tr>
-                    {/* Expanded Row for Detailed Summary */}
+                    {/* Row for Detailed Summary */}
                     {expandedId === campaign.id && (
                       <tr className="bg-gray-100">
                         <td colSpan="8" className="p-6">

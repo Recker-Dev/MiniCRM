@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import useCampaignStore from "@/stores/campaignStore";
+import { generateAIRules } from "@/lib/services";
 
 const AiRuleBuilder = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -35,46 +36,32 @@ const AiRuleBuilder = () => {
         };
     }, [isAISuggestionModalOpen, isLoading]);
 
+    
     const handleGenerateAIRules = async () => {
         try {
             setIsLoading(true);
             const query = aiPrompt.trim();
 
             if (query == "") {
-                toast.error("Query is needed!")
+                toast.error("Query is needed!");
                 return;
             }
 
-            const response = await fetch("http://localhost:3000/api/ai/dynamic", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    query: query,
-                }),
-            });
+            const { success, ruleGroup } = await generateAIRules(query);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (typeof data.ruleGroup === "object") {
-                setRuleGroup(data.ruleGroup);
+            if (success && typeof ruleGroup === "object") {
+                setRuleGroup(ruleGroup);
             } else {
-                console.error("Invalid AI response:", data);
+                console.error("Invalid AI response");
             }
         } catch (err) {
-            console.error("Error generating AI suggestions:", err);
+            console.error("Error generating AI rules:", err);
         } finally {
             setIsLoading(false);
             setAISuggestionModalOpen(false);
             setAiPrompt("");
         }
     };
-
 
 
     return (
