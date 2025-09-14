@@ -1,0 +1,14 @@
+"use client";
+
+import { SessionProvider } from "next-auth/react";
+import { Toaster } from "sonner";
+import "../styles/globals.css";
+
+export default function Providers({ children }) {
+  return (
+    <SessionProvider>
+      <Toaster position="top-right" />
+      {children}
+    </SessionProvider>
+  );
+}

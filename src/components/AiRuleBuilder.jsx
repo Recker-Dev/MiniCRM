@@ -45,7 +45,7 @@ const AiRuleBuilder = () => {
                 return;
             }
 
-            const response = await fetch("http://localhost:3000/ai/dynamic", {
+            const response = await fetch("http://localhost:3000/api/ai/dynamic", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

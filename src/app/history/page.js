@@ -1,82 +1,62 @@
 "use client";
-
+import { useSession } from "next-auth/react";
+import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { CampaignMetricsChart } from "@/components/CampaignMetricsChart";
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import useCampaignStore from "@/stores/campaignStore.js";
 import ProfileNav from '@/components/ProfileNav';
 import Link from 'next/link'; // Use Next.js Link for navigation
 
-// --- Pie Chart Component for Metrics ---
-export const COLORS = {
-  sent: '#10B981', // Green
-  pending: '#F59E0B', // Yellow
-  failed: '#EF4444', // Red
-};
-
-const CampaignMetricsChart = ({ sent, pending, failed }) => {
-  const data = [
-    { name: "Sent", value: sent, color: COLORS.sent },
-    { name: "Pending", value: pending, color: COLORS.pending },
-    { name: "Failed", value: failed, color: COLORS.failed },
-  ];
-
-  return (
-    <div className="flex items-center space-x-2">
-      <PieChart width={80} height={80}>
-        <Pie
-          data={data}
-          cx={40}
-          cy={40}
-          innerRadius={15}
-          outerRadius={30}
-          dataKey="value"
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
-          ))}
-        </Pie>
-        <Tooltip formatter={(value, name) => [`${name}: ${value}`, ""]} />
-      </PieChart>
-      <div className="flex flex-col text-sm">
-        <span className="font-bold" style={{ color: COLORS.sent }}>{sent} Sent</span>
-        <span className="font-bold" style={{ color: COLORS.pending }}>{pending} Pending</span>
-        <span className="font-bold" style={{ color: COLORS.failed }}>{failed} Failed</span>
-      </div>
-    </div>
-  );
-};
-
 
 const CampaignHistory = () => {
-  const view = useCampaignStore((s) => s.view);
-  const setView = useCampaignStore((s) => s.setView);
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+  const router = useRouter();
+
+  useEffect(() => {
+    // Only redirect if the session has finished loading and the user is not authenticated
+    if (!loading && !session) {
+      useCampaignStore.getState().resetStore();
+      router.push('/');
+    }
+  }, [session, loading, router]);
+
+
   const campaigns = useCampaignStore((s) => s.campaigns);
   const setCampaigns = useCampaignStore((s) => s.setCampaigns);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [expandedId, setExpandedId] = useState(null);
 
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("http://localhost:3000/campaigns/get", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: "user_123" }),
-        });
+    if (session?.user) {
+      (async () => {
+        try {
+          const res = await fetch("http://localhost:3000/api/campaigns/get", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId: session.user.googleId }),
+          });
 
-        if (!res.ok) throw new Error("Failed to fetch campaigns");
+          if (!res.ok) throw new Error("Failed to fetch campaigns");
 
-        const data = await res.json();
-        setCampaigns(data); // 👈 update Zustand
-      } catch (err) {
-        console.error("Error loading campaigns:", err);
-      }
-    })();
-  }, [setCampaigns]);
+          const data = await res.json();
+          console.log(data);
+          setCampaigns(data); // 👈 update Zustand
+        } catch (err) {
+          console.error("Error loading campaigns:", err);
+        }
+      })();
+    }
+  }, [session, setCampaigns]);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   const filteredCampaigns = campaigns.filter(campaign => {
     const matchesSearch = campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -98,22 +78,25 @@ const CampaignHistory = () => {
             `}</style>
       <script src="https://cdn.tailwindcss.com"></script>
       <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-10 bg-white/80 backdrop-blur-sm shadow-md">
-        <Link href="/" className="text-3xl font-extrabold text-blue-700 tracking-tight">
+        <Link href="/campaign" className="text-3xl font-extrabold text-blue-700 tracking-tight">
           Mini CRM
         </Link>
         <div className="flex items-center space-x-4">
-          <ProfileNav />
+          {/* Add these two lines to display the user's name */}
+          <span className="text-gray-600 truncate hidden md:inline"> Hello {session?.user?.name || session?.user?.email} !</span>
+          <ProfileNav session={session} />
         </div>
       </header>
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-auto mx-auto mt-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-gray-800">Campaign History</h2>
-          <button
-            onClick={() => setView("create-campaign")}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            + New Campaign
-          </button>
+          <Link href="/campaign">
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              + New Campaign
+            </button>
+          </Link>
         </div>
 
         {/* Search and Filter Section */}

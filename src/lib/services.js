@@ -2,7 +2,8 @@ const axios = require('axios');
 
 exports.getCustomerDetails = async (ruleGroup) => {
     try {
-        const response = await axios.post('http://localhost:3000/customers/get', ruleGroup);
+        // console.log(ruleGroup);
+        const response = await axios.post('http://localhost:3000/api/customers/get', ruleGroup);
 
         if (Array.isArray(response.data)) {
             return {

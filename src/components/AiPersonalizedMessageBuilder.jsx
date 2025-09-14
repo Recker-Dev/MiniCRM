@@ -47,7 +47,7 @@ const AiPersonalizedMessageBuilder = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:3000/ai/campaign", {
+      const response = await fetch("http://localhost:3000/api/ai/campaign", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

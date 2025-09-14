@@ -29,7 +29,7 @@ const useCampaignStore = create((set, get) => ({
     setCampaigns: (newCampaigns) => set(() => ({ campaigns: newCampaigns })),
     setPersonalizedMessage: (message) => set(() => ({ personalizedMessage: message })),
     setModalOpen: (isOpen) => set(() => ({ isModalOpen: isOpen })),
-    setRuleGroup: (newRuleGroup) => set(()=> ({ruleGroup: newRuleGroup})),
+    setRuleGroup: (newRuleGroup) => set(() => ({ ruleGroup: newRuleGroup })),
 
 
     // Rule tree actions
@@ -186,6 +186,20 @@ const useCampaignStore = create((set, get) => ({
             },
         };
     }),
+
+    // Global reset action
+    resetStore: () => set(() => ({
+        view: 'create-campaign',
+        audienceSize: null,
+        campaignName: '',
+        personalizedMessage: '',
+        isModalOpen: false,
+        ruleGroup: {
+            id: 'group-root',
+            combinator: 'AND',
+            rules: [{ id: 'rule-1', attribute: '', operator: '', value: '' }],
+        },
+    })),
 
 
 }));

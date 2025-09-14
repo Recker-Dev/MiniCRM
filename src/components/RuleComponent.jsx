@@ -63,6 +63,16 @@ const RuleComponent = ({ rule, attributes, operators, parentId }) => {
                     </span>
                 </button>
             </div>
+            {rule.attribute === "last_order_date" && rule.operator && (
+                <span className="text-xs text-gray-500 mt-2 md:mt-0 block text-right">
+                    <span className="font-semibold">{rule.operator === '<' ? 'Less than (<):' : 'Greater than (>):'}</span>
+                    {' '}
+                    {rule.operator === '<'
+                        ? 'last order was placed more than the specified days ago.'
+                        : 'last order was placed within the specified days ago.'
+                    }
+                </span>
+            )}
         </div>
     );
 };

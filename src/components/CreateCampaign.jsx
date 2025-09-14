@@ -7,9 +7,9 @@ import useCampaignStore from "../stores/campaignStore";
 import AiPersonalizedMessageBuilder from "./AiPersonalizedMessageBuilder";
 import AiRuleBuilder from "./AiRuleBuilder";
 import { getCustomerDetails } from "../lib/services";
-import { SparklesIcon, EyeIcon, UserGroupIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 
-const CreateCampaign = () => {
+const CreateCampaign = ({ attributes, operators }) => {
   const campaignName = useCampaignStore((s) => s.campaignName);
   const setCampaignName = useCampaignStore((s) => s.setCampaignName);
   const personalizedMessage = useCampaignStore((s) => s.personalizedMessage);
@@ -20,17 +20,7 @@ const CreateCampaign = () => {
   const setCustomers = useCampaignStore((s) => s.setCustomers);
   const setModalOpen = useCampaignStore((s) => s.setModalOpen);
 
-  const attributes = [
-    { label: "Spend", value: "total_spend", type: "number" },
-    { label: "Visits", value: "visit", type: "number" },
-    { label: "City", value: "city", type: "string" },
-    { label: "Last Order in (days)", value: "last_order_date", type: "number" },
-  ];
 
-  const operators = {
-    number: [">", "<", "=", ">=", "<="],
-    string: ["=", "!="],
-  };
 
   const handleGetEstimate = async () => {
     try {
